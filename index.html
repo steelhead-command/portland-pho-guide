@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#1a1a2e">
-    <title>AI Food Finder - Best Restaurants Anywhere</title>
+    <title>Maître Claude - AI Fine Dining Concierge</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -16,6 +16,7 @@
             --secondary: #0f3460;
             --accent: #f39c12;
             --dark: #1a1a2e;
+            --purple: #2d1b4e;
             --light: #eee;
             --card-bg: #16213e;
         }
@@ -28,7 +29,8 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--dark);
+            background: linear-gradient(180deg, var(--dark) 0%, var(--purple) 30%, #1a0a2e 100%);
+            min-height: 100vh;
             color: var(--light);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
@@ -38,7 +40,7 @@
         /* Header */
         .hero {
             background: linear-gradient(135deg, var(--dark) 0%, var(--secondary) 50%, var(--primary) 100%);
-            padding: 60px 20px 30px;
+            padding: 60px 20px 40px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -55,6 +57,17 @@
             animation: pulse 4s ease-in-out infinite;
         }
 
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(transparent, var(--purple));
+            pointer-events: none;
+        }
+
         @keyframes pulse {
             0%, 100% { transform: scale(1); opacity: 0.5; }
             50% { transform: scale(1.1); opacity: 0.8; }
@@ -65,9 +78,16 @@
             z-index: 1;
         }
 
+        .hero .chef-emoji {
+            font-size: 5rem;
+            display: block;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+
         .hero h1 {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-size: clamp(2.5rem, 10vw, 4rem);
             font-weight: 700;
             margin-bottom: 10px;
             background: linear-gradient(90deg, #fff, var(--accent));
@@ -80,6 +100,7 @@
             font-size: 1.1rem;
             opacity: 0.9;
             margin-bottom: 15px;
+            font-style: italic;
         }
 
         .hero .badge {
@@ -92,16 +113,9 @@
             border: 1px solid rgba(255,255,255,0.2);
         }
 
-        .hero .bowl-emoji {
-            font-size: 4rem;
-            display: block;
-            margin-bottom: 15px;
-            animation: float 3s ease-in-out infinite;
-        }
-
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
         }
 
         /* Search Box */
@@ -109,13 +123,17 @@
             padding: 30px 20px;
             max-width: 600px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .search-box {
-            background: var(--card-bg);
+            background: rgba(22, 33, 62, 0.9);
+            backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .search-box h2 {
@@ -194,22 +212,126 @@
         }
 
         .search-btn:disabled {
-            opacity: 0.6;
+            opacity: 0.7;
             cursor: not-allowed;
             transform: none;
         }
 
-        .search-btn .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+        /* Cooking Animation */
+        .cooking-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .cooking-overlay.active {
+            display: flex;
+        }
+
+        .cooking-scene {
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .chef-cooking {
+            font-size: 6rem;
+            animation: chefCook 0.5s ease-in-out infinite alternate;
+            margin-bottom: 20px;
+        }
+
+        @keyframes chefCook {
+            0% { transform: rotate(-10deg) scale(1); }
+            100% { transform: rotate(10deg) scale(1.1); }
+        }
+
+        .cooking-pot {
+            font-size: 4rem;
+            position: relative;
+            display: inline-block;
+            animation: potBubble 0.3s ease-in-out infinite alternate;
+        }
+
+        @keyframes potBubble {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-5px); }
+        }
+
+        .steam {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            opacity: 0;
+            animation: steamRise 1s ease-out infinite;
+        }
+
+        .steam:nth-child(2) { animation-delay: 0.3s; left: 30%; }
+        .steam:nth-child(3) { animation-delay: 0.6s; left: 70%; }
+
+        @keyframes steamRise {
+            0% { opacity: 0; transform: translateX(-50%) translateY(0); }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-40px); }
+        }
+
+        .cooking-steps {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .cooking-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            opacity: 0.3;
+            transform: translateX(-20px);
+            transition: all 0.4s ease;
+        }
+
+        .cooking-step.active {
+            opacity: 1;
+            transform: translateX(0);
+            background: rgba(233,69,96,0.2);
+            border: 1px solid rgba(233,69,96,0.3);
+        }
+
+        .cooking-step.done {
+            opacity: 0.6;
+            transform: translateX(0);
+        }
+
+        .cooking-step .icon {
+            font-size: 1.5rem;
+            animation: none;
+        }
+
+        .cooking-step.active .icon {
+            animation: chopChop 0.3s ease-in-out infinite alternate;
+        }
+
+        @keyframes chopChop {
+            0% { transform: rotate(-20deg); }
+            100% { transform: rotate(20deg); }
+        }
+
+        .cooking-step .text {
+            font-size: 1rem;
         }
 
         /* Results Section */
@@ -222,6 +344,12 @@
 
         .results-section.active {
             display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .results-header {
@@ -231,7 +359,7 @@
 
         .results-header h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: var(--accent);
             margin-bottom: 8px;
         }
@@ -242,7 +370,7 @@
         }
 
         .results-summary {
-            background: var(--card-bg);
+            background: rgba(22, 33, 62, 0.8);
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 25px;
@@ -254,22 +382,48 @@
             line-height: 1.7;
         }
 
-        /* Section Headers */
-        .section-header {
-            padding: 30px 20px 15px;
+        /* Error States */
+        .error-state {
             text-align: center;
+            padding: 40px 20px;
         }
 
-        .section-header h2 {
+        .error-state .error-emoji {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .error-state h3 {
             font-family: 'Playfair Display', serif;
             font-size: 1.5rem;
             color: var(--accent);
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
 
-        .section-header p {
-            font-size: 0.9rem;
-            opacity: 0.7;
+        .error-state p {
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .error-state .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .error-state .suggestion-chip {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .error-state .suggestion-chip:hover {
+            background: var(--primary);
         }
 
         /* Restaurant Cards */
@@ -283,11 +437,12 @@
         }
 
         .card {
-            background: var(--card-bg);
+            background: rgba(22, 33, 62, 0.8);
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .card:hover {
@@ -309,7 +464,7 @@
             left: 0;
             right: 0;
             height: 60%;
-            background: linear-gradient(transparent, var(--card-bg));
+            background: linear-gradient(transparent, rgba(22, 33, 62, 0.95));
         }
 
         .card-rank {
@@ -457,36 +612,6 @@
             opacity: 0.6;
         }
 
-        /* Quick Stats */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            padding: 20px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .stat {
-            text-align: center;
-            background: rgba(255,255,255,0.05);
-            padding: 15px 10px;
-            border-radius: 15px;
-        }
-
-        .stat-value {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            color: var(--accent);
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            opacity: 0.7;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
         /* Divider */
         .divider {
             text-align: center;
@@ -505,7 +630,7 @@
             content: '';
             position: absolute;
             top: 50%;
-            width: 100px;
+            width: 60px;
             height: 1px;
             background: currentColor;
         }
@@ -530,48 +655,69 @@
             }
 
             .card-image::after {
-                background: linear-gradient(90deg, transparent, var(--card-bg));
+                background: linear-gradient(90deg, transparent, rgba(22, 33, 62, 0.95));
                 height: 100%;
                 width: 60%;
                 right: 0;
                 left: auto;
             }
         }
-
-        /* Error state */
-        .error-message {
-            background: rgba(233,69,96,0.2);
-            border: 1px solid var(--primary);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            margin: 20px;
-        }
     </style>
 </head>
 <body>
+    <!-- Cooking Animation Overlay -->
+    <div class="cooking-overlay" id="cookingOverlay">
+        <div class="cooking-scene">
+            <div class="chef-cooking">👨‍🍳</div>
+            <div class="cooking-pot">
+                🍲
+                <span class="steam">💨</span>
+                <span class="steam">💨</span>
+                <span class="steam">💨</span>
+            </div>
+            <div class="cooking-steps" id="cookingSteps">
+                <div class="cooking-step" data-step="1">
+                    <span class="icon">🔪</span>
+                    <span class="text">Searching restaurants...</span>
+                </div>
+                <div class="cooking-step" data-step="2">
+                    <span class="icon">🥘</span>
+                    <span class="text">Gathering fresh reviews...</span>
+                </div>
+                <div class="cooking-step" data-step="3">
+                    <span class="icon">🍳</span>
+                    <span class="text">Analyzing with AI...</span>
+                </div>
+                <div class="cooking-step" data-step="4">
+                    <span class="icon">✨</span>
+                    <span class="text">Plating recommendations...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <header class="hero">
         <div class="hero-content">
-            <span class="bowl-emoji">🍜</span>
-            <h1>AI Food Finder</h1>
-            <p class="subtitle">Michelin chef + Yelp expert recommendations</p>
-            <span class="badge">🤖 Powered by Claude AI</span>
+            <span class="chef-emoji">👨‍🍳</span>
+            <h1>Maître Claude</h1>
+            <p class="subtitle">"Your AI Fine Dining Concierge"</p>
+            <span class="badge">🍽️ Michelin-Level Recommendations</span>
         </div>
     </header>
 
     <!-- Search Section -->
     <section class="search-section">
         <div class="search-box">
-            <h2>🔍 Find the Best Food Anywhere</h2>
+            <h2>🔍 Where shall we dine tonight?</h2>
             <form class="search-form" id="searchForm">
                 <div class="input-group">
                     <label>City or Location</label>
-                    <input type="text" id="location" placeholder="e.g. Tokyo, New York, Paris" required>
+                    <input type="text" id="location" placeholder="e.g. Tokyo, Paris, New York" required>
                 </div>
                 <div class="input-row">
                     <div class="input-group">
                         <label>Cuisine</label>
-                        <input type="text" id="cuisine" placeholder="e.g. Ramen, Italian">
+                        <input type="text" id="cuisine" placeholder="e.g. Ramen, French">
                     </div>
                     <div class="input-group">
                         <label>Budget</label>
@@ -585,7 +731,7 @@
                     </div>
                 </div>
                 <button type="submit" class="search-btn" id="searchBtn">
-                    <span class="btn-text">🚀 Find Restaurants</span>
+                    <span>🍴 Find My Table</span>
                 </button>
             </form>
         </div>
@@ -601,32 +747,11 @@
         <div class="cards-container" id="resultsCards"></div>
     </section>
 
-    <div class="divider"><span>or browse our curated guide</span></div>
+    <div class="divider"><span>Portland Classics</span></div>
 
     <!-- Portland Static Content -->
-    <div class="stats">
-        <div class="stat">
-            <div class="stat-value">8</div>
-            <div class="stat-label">Restaurants</div>
-        </div>
-        <div class="stat">
-            <div class="stat-value">40+</div>
-            <div class="stat-label">Years History</div>
-        </div>
-        <div class="stat">
-            <div class="stat-value">45</div>
-            <div class="stat-label">Min Drive</div>
-        </div>
-    </div>
-
     <section>
-        <div class="section-header">
-            <h2>🏆 Portland's Legendary Pho</h2>
-            <p>Institutions serving pho since the '90s</p>
-        </div>
-
         <div class="cards-container">
-            <!-- Pho Hung -->
             <article class="card">
                 <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=600&q=80');">
                     <span class="card-rank">1</span>
@@ -639,11 +764,11 @@
                         <span>💰 $$</span>
                         <span>📍 Powell Blvd</span>
                     </div>
-                    <p class="card-description">"The broth achieves perfect balance of bone-deep richness and clean, aromatic clarity. Closest to Little Saigon quality."</p>
+                    <p class="card-description">"The broth achieves perfect balance of bone-deep richness and clean, aromatic clarity."</p>
                     <div class="card-details">
                         <h4>Must Try</h4>
                         <div class="must-try">
-                            <span>Super Bowl (6 cuts)</span>
+                            <span>Super Bowl</span>
                             <span>Pho Tai</span>
                         </div>
                     </div>
@@ -654,7 +779,6 @@
                 </div>
             </article>
 
-            <!-- Pho Oregon -->
             <article class="card">
                 <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1555126634-323283e090fa?w=600&q=80');">
                     <span class="card-rank">2</span>
@@ -667,7 +791,7 @@
                         <span>💰 $$</span>
                         <span>📍 NE 82nd Ave</span>
                     </div>
-                    <p class="card-description">"Nuanced, understated broth with beautifully tender beef. 22 pho variations. A true Portland institution."</p>
+                    <p class="card-description">"22 pho variations with beautifully tender beef. A true Portland institution."</p>
                     <div class="card-details">
                         <h4>Must Try</h4>
                         <div class="must-try">
@@ -682,11 +806,10 @@
                 </div>
             </article>
 
-            <!-- Rose VL -->
             <article class="card">
                 <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80');">
                     <span class="card-rank">3</span>
-                    <span class="card-badge">Cult Favorite</span>
+                    <span class="card-badge">James Beard</span>
                 </div>
                 <div class="card-content">
                     <h3>Rose VL / Ha VL</h3>
@@ -695,11 +818,11 @@
                         <span>💰 $</span>
                         <span>📍 SE Powell</span>
                     </div>
-                    <p class="card-description">"James Beard nominated. Only 2-3 rotating dishes daily, made in small batches. Go early - they sell out!"</p>
+                    <p class="card-description">"James Beard nominated. Only 2-3 rotating dishes daily. Go early - they sell out!"</p>
                     <div class="card-details">
                         <h4>Must Try</h4>
                         <div class="must-try">
-                            <span>Turmeric Noodle Soup</span>
+                            <span>Turmeric Soup</span>
                             <span>Cao Lầu</span>
                         </div>
                     </div>
@@ -714,15 +837,15 @@
 
     <footer class="footer">
         <div class="ai-badge">
-            <span>🤖</span>
-            <span>Generated by Claude AI</span>
+            <span>👨‍🍳</span>
+            <span>Powered by Maître Claude</span>
         </div>
-        <p>Research, curation & web design - all by AI</p>
+        <p>AI-powered restaurant discovery</p>
         <p style="margin-top: 10px; opacity: 0.4;">Made with ❤️ for Dad</p>
     </footer>
 
     <script>
-        // API Configuration - Render deployment
+        // API Configuration
         const API_URL = 'https://food-agent-api-5faq.onrender.com';
 
         const form = document.getElementById('searchForm');
@@ -732,35 +855,65 @@
         const resultsSubtitle = document.getElementById('resultsSubtitle');
         const resultsSummary = document.getElementById('resultsSummary');
         const resultsCards = document.getElementById('resultsCards');
+        const cookingOverlay = document.getElementById('cookingOverlay');
+        const cookingSteps = document.querySelectorAll('.cooking-step');
 
-        const foodImages = [
-            'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=600&q=80',
-            'https://images.unsplash.com/photo-1555126634-323283e090fa?w=600&q=80',
-            'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80',
-            'https://images.unsplash.com/photo-1576577445504-6af96477db52?w=600&q=80',
-            'https://images.unsplash.com/photo-1503764654157-72d979d9af2f?w=600&q=80',
-            'https://images.unsplash.com/photo-1547928576-b822bc410bdf?w=600&q=80',
-            'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80',
-            'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&q=80'
-        ];
+        // Cuisine-specific images
+        const cuisineImages = {
+            'italian': 'https://images.unsplash.com/photo-1498579150354-977475b7ea0b?w=600&q=80',
+            'japanese': 'https://images.unsplash.com/photo-1580822184713-fc5400e7fe10?w=600&q=80',
+            'ramen': 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80',
+            'french': 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80',
+            'chinese': 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&q=80',
+            'mexican': 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80',
+            'indian': 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80',
+            'thai': 'https://images.unsplash.com/photo-1559314809-0d155014e29e?w=600&q=80',
+            'vietnamese': 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=600&q=80',
+            'korean': 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=600&q=80',
+            'default': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80'
+        };
+
+        function getCuisineImage(cuisine) {
+            const key = cuisine.toLowerCase();
+            for (const [cuisineType, url] of Object.entries(cuisineImages)) {
+                if (key.includes(cuisineType)) return url;
+            }
+            return cuisineImages.default;
+        }
+
+        async function animateCookingSteps() {
+            for (let i = 0; i < cookingSteps.length; i++) {
+                cookingSteps.forEach(s => s.classList.remove('active'));
+                cookingSteps[i].classList.add('active');
+                if (i > 0) cookingSteps[i-1].classList.add('done');
+                await new Promise(r => setTimeout(r, 800));
+            }
+        }
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const location = document.getElementById('location').value;
-            const cuisine = document.getElementById('cuisine').value;
+            const location = document.getElementById('location').value.trim();
+            const cuisine = document.getElementById('cuisine').value.trim();
             const budget = document.getElementById('budget').value;
 
-            // Show loading state
+            if (!location) {
+                alert('Please enter a location');
+                return;
+            }
+
+            // Show cooking animation
+            cookingOverlay.classList.add('active');
+            cookingSteps.forEach(s => s.classList.remove('active', 'done'));
             searchBtn.disabled = true;
-            searchBtn.innerHTML = '<div class="spinner"></div> Searching...';
+
+            // Start the animation
+            const animationPromise = animateCookingSteps();
 
             try {
                 const response = await fetch(`${API_URL}/search`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         location: location,
                         cuisine: cuisine || null,
@@ -768,30 +921,29 @@
                     })
                 });
 
-                if (!response.ok) {
-                    throw new Error('API request failed');
-                }
+                await animationPromise;
+
+                if (!response.ok) throw new Error('API error');
 
                 const data = await response.json();
-                displayResults(data, location, cuisine);
+
+                // Small delay before hiding overlay
+                await new Promise(r => setTimeout(r, 500));
+                cookingOverlay.classList.remove('active');
+
+                if (data.recommendations && data.recommendations.length > 0) {
+                    displayResults(data, location, cuisine);
+                } else {
+                    displayNoResults(location, cuisine);
+                }
 
             } catch (error) {
                 console.error('Search failed:', error);
-                resultsSection.classList.add('active');
-                resultsTitle.textContent = '😅 Oops!';
-                resultsSubtitle.textContent = 'Could not connect to the AI agent';
-                resultsSummary.innerHTML = `
-                    <p><strong>The API server isn't running.</strong></p>
-                    <p style="margin-top: 10px; opacity: 0.8;">To enable live search, run this in your terminal:</p>
-                    <code style="display: block; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-top: 10px; font-size: 0.85rem;">
-                        cd ~/food_agent && python3 -m uvicorn main:app --reload
-                    </code>
-                    <p style="margin-top: 15px; opacity: 0.7;">Then refresh this page and try again!</p>
-                `;
-                resultsCards.innerHTML = '';
+                await new Promise(r => setTimeout(r, 500));
+                cookingOverlay.classList.remove('active');
+                displayError(location);
             } finally {
                 searchBtn.disabled = false;
-                searchBtn.innerHTML = '<span class="btn-text">🚀 Find Restaurants</span>';
             }
         });
 
@@ -800,13 +952,13 @@
 
             const cuisineText = cuisine ? ` ${cuisine}` : '';
             resultsTitle.textContent = `🍽️ Best${cuisineText} in ${location}`;
-            resultsSubtitle.textContent = `${data.recommendations.length} AI-curated recommendations`;
+            resultsSubtitle.textContent = `${data.recommendations.length} recommendations from Maître Claude`;
 
             resultsSummary.innerHTML = `<p>${data.summary}</p>`;
 
             resultsCards.innerHTML = data.recommendations.map((rec, index) => `
                 <article class="card">
-                    <div class="card-image" style="background-image: url('${foodImages[index % foodImages.length]}');">
+                    <div class="card-image" style="background-image: url('${getCuisineImage(rec.cuisine)}');">
                         <span class="card-rank">${index + 1}</span>
                         ${rec.value_score ? `<span class="card-badge">Value: ${rec.value_score}/10</span>` : ''}
                     </div>
@@ -834,8 +986,52 @@
                 </article>
             `).join('');
 
-            // Scroll to results
             resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function displayNoResults(location, cuisine) {
+            resultsSection.classList.add('active');
+            resultsTitle.textContent = '';
+            resultsSubtitle.textContent = '';
+            resultsSummary.innerHTML = '';
+
+            const cuisineText = cuisine ? ` ${cuisine} restaurants` : ' restaurants';
+            resultsCards.innerHTML = `
+                <div class="error-state">
+                    <div class="error-emoji">🍽️😔</div>
+                    <h3>Maître Claude couldn't find${cuisineText} in ${location}</h3>
+                    <p>Perhaps try a different location or cuisine?</p>
+                    <div class="suggestions">
+                        <span class="suggestion-chip" onclick="trySuggestion('Tokyo', 'Ramen')">🍜 Ramen in Tokyo</span>
+                        <span class="suggestion-chip" onclick="trySuggestion('Paris', 'French')">🥐 French in Paris</span>
+                        <span class="suggestion-chip" onclick="trySuggestion('New York', 'Italian')">🍝 Italian in NYC</span>
+                    </div>
+                </div>
+            `;
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function displayError(location) {
+            resultsSection.classList.add('active');
+            resultsTitle.textContent = '';
+            resultsSubtitle.textContent = '';
+            resultsSummary.innerHTML = '';
+
+            resultsCards.innerHTML = `
+                <div class="error-state">
+                    <div class="error-emoji">👨‍🍳💤</div>
+                    <h3>The kitchen is warming up...</h3>
+                    <p>Our AI chef is waking from a nap. Please try again in ~30 seconds.</p>
+                    <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 10px;">(Free tier servers sleep after 15 min of inactivity)</p>
+                </div>
+            `;
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function trySuggestion(location, cuisine) {
+            document.getElementById('location').value = location;
+            document.getElementById('cuisine').value = cuisine;
+            form.dispatchEvent(new Event('submit'));
         }
     </script>
 </body>
