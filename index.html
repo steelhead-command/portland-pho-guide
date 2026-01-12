@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#1a1a2e">
-    <title>Portland's Best Pho - AI Curated Guide</title>
+    <title>AI Food Finder - Best Restaurants Anywhere</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -38,7 +38,7 @@
         /* Header */
         .hero {
             background: linear-gradient(135deg, var(--dark) 0%, var(--secondary) 50%, var(--primary) 100%);
-            padding: 60px 20px 40px;
+            padding: 60px 20px 30px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -102,6 +102,156 @@
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
+        }
+
+        /* Search Box */
+        .search-section {
+            padding: 30px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-box {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .search-box h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--accent);
+        }
+
+        .search-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+
+        .input-group input, .input-group select {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: white;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(233,69,96,0.2);
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, var(--primary), #c73e54);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(233,69,96,0.4);
+        }
+
+        .search-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .search-btn .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Results Section */
+        .results-section {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .results-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .results-header p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .results-summary {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .results-summary p {
+            font-size: 0.95rem;
+            line-height: 1.7;
         }
 
         /* Section Headers */
@@ -337,6 +487,32 @@
             letter-spacing: 0.5px;
         }
 
+        /* Divider */
+        .divider {
+            text-align: center;
+            padding: 30px 20px;
+            opacity: 0.5;
+        }
+
+        .divider span {
+            display: inline-block;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .divider span::before,
+        .divider span::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 100px;
+            height: 1px;
+            background: currentColor;
+        }
+
+        .divider span::before { right: 100%; }
+        .divider span::after { left: 100%; }
+
         /* Responsive */
         @media (min-width: 768px) {
             .cards-container {
@@ -361,18 +537,73 @@
                 left: auto;
             }
         }
+
+        /* Error state */
+        .error-message {
+            background: rgba(233,69,96,0.2);
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px;
+        }
     </style>
 </head>
 <body>
     <header class="hero">
         <div class="hero-content">
             <span class="bowl-emoji">🍜</span>
-            <h1>Portland's Best Pho</h1>
-            <p class="subtitle">A curated guide for Woodland, WA foodies</p>
-            <span class="badge">🤖 AI-Powered Research by Claude</span>
+            <h1>AI Food Finder</h1>
+            <p class="subtitle">Michelin chef + Yelp expert recommendations</p>
+            <span class="badge">🤖 Powered by Claude AI</span>
         </div>
     </header>
 
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="search-box">
+            <h2>🔍 Find the Best Food Anywhere</h2>
+            <form class="search-form" id="searchForm">
+                <div class="input-group">
+                    <label>City or Location</label>
+                    <input type="text" id="location" placeholder="e.g. Tokyo, New York, Paris" required>
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Cuisine</label>
+                        <input type="text" id="cuisine" placeholder="e.g. Ramen, Italian">
+                    </div>
+                    <div class="input-group">
+                        <label>Budget</label>
+                        <select id="budget">
+                            <option value="">Any</option>
+                            <option value="$">$ - Budget</option>
+                            <option value="$$">$$ - Moderate</option>
+                            <option value="$$$">$$$ - Upscale</option>
+                            <option value="$$$$">$$$$ - Luxury</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="search-btn" id="searchBtn">
+                    <span class="btn-text">🚀 Find Restaurants</span>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Dynamic Results Section -->
+    <section class="results-section" id="resultsSection">
+        <div class="results-header">
+            <h2 id="resultsTitle">Results</h2>
+            <p id="resultsSubtitle"></p>
+        </div>
+        <div class="results-summary" id="resultsSummary"></div>
+        <div class="cards-container" id="resultsCards"></div>
+    </section>
+
+    <div class="divider"><span>or browse our curated guide</span></div>
+
+    <!-- Portland Static Content -->
     <div class="stats">
         <div class="stat">
             <div class="stat-value">8</div>
@@ -390,8 +621,8 @@
 
     <section>
         <div class="section-header">
-            <h2>🏆 The Legends</h2>
-            <p>Portland institutions serving pho since the '90s</p>
+            <h2>🏆 Portland's Legendary Pho</h2>
+            <p>Institutions serving pho since the '90s</p>
         </div>
 
         <div class="cards-container">
@@ -451,47 +682,10 @@
                 </div>
             </article>
 
-            <!-- Tan Tan -->
-            <article class="card">
-                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1576577445504-6af96477db52?w=600&q=80');">
-                    <span class="card-rank">3</span>
-                    <span class="card-badge">Beaverton</span>
-                </div>
-                <div class="card-content">
-                    <h3>Tân Tân</h3>
-                    <div class="card-meta">
-                        <span>⭐ 4.3</span>
-                        <span>💰 $$</span>
-                        <span>📍 Beaverton</span>
-                    </div>
-                    <p class="card-description">"Founded by refugees in the '90s. Their pho dac biet is loaded with every cut of beef imaginable."</p>
-                    <div class="card-details">
-                        <h4>Must Try</h4>
-                        <div class="must-try">
-                            <span>Pho Dac Biet</span>
-                            <span>Bun Bo Hue</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <a href="https://maps.google.com/?q=Tan+Tan+Beaverton+OR" class="btn btn-primary">📍 Directions</a>
-                        <a href="https://www.yelp.com/biz/tan-tan-cafe-and-delicatessen-beaverton" class="btn btn-secondary">📖 Yelp</a>
-                    </div>
-                </div>
-            </article>
-        </div>
-    </section>
-
-    <section>
-        <div class="section-header">
-            <h2>💎 Hidden Gems</h2>
-            <p>Where the locals go - small batch, big flavor</p>
-        </div>
-
-        <div class="cards-container">
             <!-- Rose VL -->
             <article class="card">
                 <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80');">
-                    <span class="card-rank">4</span>
+                    <span class="card-rank">3</span>
                     <span class="card-badge">Cult Favorite</span>
                 </div>
                 <div class="card-content">
@@ -515,127 +709,6 @@
                     </div>
                 </div>
             </article>
-
-            <!-- Thom -->
-            <article class="card">
-                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1503764654157-72d979d9af2f?w=600&q=80');">
-                    <span class="card-rank">5</span>
-                    <span class="card-badge">24hr Broth</span>
-                </div>
-                <div class="card-content">
-                    <h3>Thom</h3>
-                    <div class="card-meta">
-                        <span>⭐ 4.4</span>
-                        <span>💰 $$</span>
-                        <span>📍 Concordia</span>
-                    </div>
-                    <p class="card-description">"Third-generation family recipe. 24-hour bone marrow broth - this is the real deal. Also has amazing vegan pho."</p>
-                    <div class="card-details">
-                        <h4>Must Try</h4>
-                        <div class="must-try">
-                            <span>Bone Marrow Pho</span>
-                            <span>18hr Vegan Pho</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <a href="https://maps.google.com/?q=Thom+restaurant+Concordia+Portland+OR" class="btn btn-primary">📍 Directions</a>
-                        <a href="https://www.yelp.com/biz/thom-portland" class="btn btn-secondary">📖 Yelp</a>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Pho Kim -->
-            <article class="card">
-                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1547928576-b822bc410bdf?w=600&q=80');">
-                    <span class="card-rank">6</span>
-                    <span class="card-badge">Best Value</span>
-                </div>
-                <div class="card-content">
-                    <h3>Pho Kim</h3>
-                    <div class="card-meta">
-                        <span>⭐ 4.2</span>
-                        <span>💰 $</span>
-                        <span>📍 East Portland</span>
-                    </div>
-                    <p class="card-description">"Captures the essence of a family kitchen. Spacious, unpretentious, and incredibly cheap. A sleeper hit."</p>
-                    <div class="card-details">
-                        <h4>Must Try</h4>
-                        <div class="must-try">
-                            <span>House Pho</span>
-                            <span>Spring Rolls</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <a href="https://maps.google.com/?q=Pho+Kim+Portland+OR" class="btn btn-primary">📍 Directions</a>
-                        <a href="https://www.yelp.com/search?find_desc=pho+kim&find_loc=Portland%2C+OR" class="btn btn-secondary">📖 Yelp</a>
-                    </div>
-                </div>
-            </article>
-        </div>
-    </section>
-
-    <section>
-        <div class="section-header">
-            <h2>✨ Modern Vibes</h2>
-            <p>Date night spots with elevated atmosphere</p>
-        </div>
-
-        <div class="cards-container">
-            <!-- Luc Lac -->
-            <article class="card">
-                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80');">
-                    <span class="card-rank">7</span>
-                    <span class="card-badge">Date Night</span>
-                </div>
-                <div class="card-content">
-                    <h3>Luc Lac</h3>
-                    <div class="card-meta">
-                        <span>⭐ 4.3</span>
-                        <span>💰 $$</span>
-                        <span>📍 Downtown</span>
-                    </div>
-                    <p class="card-description">"Grandmother's recipe with five-spice blend. Striking neon ambiance. Try the durian horchata if you're adventurous!"</p>
-                    <div class="card-details">
-                        <h4>Must Try</h4>
-                        <div class="must-try">
-                            <span>Pho Bo</span>
-                            <span>Vermicelli Bowl</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <a href="https://maps.google.com/?q=835+SW+2nd+Ave+Portland+OR" class="btn btn-primary">📍 Directions</a>
-                        <a href="https://www.luclackitchen.com" class="btn btn-secondary">🌐 Website</a>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Pho Mekha -->
-            <article class="card">
-                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&q=80');">
-                    <span class="card-rank">8</span>
-                    <span class="card-badge">Best Condiments</span>
-                </div>
-                <div class="card-content">
-                    <h3>Pho Mekha</h3>
-                    <div class="card-meta">
-                        <span>⭐ 4.3</span>
-                        <span>💰 $$</span>
-                        <span>📍 Roseway</span>
-                    </div>
-                    <p class="card-description">"Best tableside condiment selection in the city - pickled peppers, minced garlic, fresh chili sambals. Order the egg coffee!"</p>
-                    <div class="card-details">
-                        <h4>Must Try</h4>
-                        <div class="must-try">
-                            <span>House Pho</span>
-                            <span>Egg Coffee</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <a href="https://maps.google.com/?q=Pho+Mekha+Portland+OR" class="btn btn-primary">📍 Directions</a>
-                        <a href="https://www.yelp.com/biz/pho-mekha-portland" class="btn btn-secondary">📖 Yelp</a>
-                    </div>
-                </div>
-            </article>
         </div>
     </section>
 
@@ -644,8 +717,126 @@
             <span>🤖</span>
             <span>Generated by Claude AI</span>
         </div>
-        <p>Research, curation & web design in under 60 seconds</p>
+        <p>Research, curation & web design - all by AI</p>
         <p style="margin-top: 10px; opacity: 0.4;">Made with ❤️ for Dad</p>
     </footer>
+
+    <script>
+        // API Configuration - change this to your deployed API URL
+        const API_URL = 'http://localhost:8000';
+
+        const form = document.getElementById('searchForm');
+        const searchBtn = document.getElementById('searchBtn');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsTitle = document.getElementById('resultsTitle');
+        const resultsSubtitle = document.getElementById('resultsSubtitle');
+        const resultsSummary = document.getElementById('resultsSummary');
+        const resultsCards = document.getElementById('resultsCards');
+
+        const foodImages = [
+            'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=600&q=80',
+            'https://images.unsplash.com/photo-1555126634-323283e090fa?w=600&q=80',
+            'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80',
+            'https://images.unsplash.com/photo-1576577445504-6af96477db52?w=600&q=80',
+            'https://images.unsplash.com/photo-1503764654157-72d979d9af2f?w=600&q=80',
+            'https://images.unsplash.com/photo-1547928576-b822bc410bdf?w=600&q=80',
+            'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80',
+            'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&q=80'
+        ];
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const location = document.getElementById('location').value;
+            const cuisine = document.getElementById('cuisine').value;
+            const budget = document.getElementById('budget').value;
+
+            // Show loading state
+            searchBtn.disabled = true;
+            searchBtn.innerHTML = '<div class="spinner"></div> Searching...';
+
+            try {
+                const response = await fetch(`${API_URL}/search`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        location: location,
+                        cuisine: cuisine || null,
+                        budget: budget || null
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+
+                const data = await response.json();
+                displayResults(data, location, cuisine);
+
+            } catch (error) {
+                console.error('Search failed:', error);
+                resultsSection.classList.add('active');
+                resultsTitle.textContent = '😅 Oops!';
+                resultsSubtitle.textContent = 'Could not connect to the AI agent';
+                resultsSummary.innerHTML = `
+                    <p><strong>The API server isn't running.</strong></p>
+                    <p style="margin-top: 10px; opacity: 0.8;">To enable live search, run this in your terminal:</p>
+                    <code style="display: block; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-top: 10px; font-size: 0.85rem;">
+                        cd ~/food_agent && python3 -m uvicorn main:app --reload
+                    </code>
+                    <p style="margin-top: 15px; opacity: 0.7;">Then refresh this page and try again!</p>
+                `;
+                resultsCards.innerHTML = '';
+            } finally {
+                searchBtn.disabled = false;
+                searchBtn.innerHTML = '<span class="btn-text">🚀 Find Restaurants</span>';
+            }
+        });
+
+        function displayResults(data, location, cuisine) {
+            resultsSection.classList.add('active');
+
+            const cuisineText = cuisine ? ` ${cuisine}` : '';
+            resultsTitle.textContent = `🍽️ Best${cuisineText} in ${location}`;
+            resultsSubtitle.textContent = `${data.recommendations.length} AI-curated recommendations`;
+
+            resultsSummary.innerHTML = `<p>${data.summary}</p>`;
+
+            resultsCards.innerHTML = data.recommendations.map((rec, index) => `
+                <article class="card">
+                    <div class="card-image" style="background-image: url('${foodImages[index % foodImages.length]}');">
+                        <span class="card-rank">${index + 1}</span>
+                        ${rec.value_score ? `<span class="card-badge">Value: ${rec.value_score}/10</span>` : ''}
+                    </div>
+                    <div class="card-content">
+                        <h3>${rec.name}</h3>
+                        <div class="card-meta">
+                            ${rec.rating ? `<span>⭐ ${rec.rating}</span>` : ''}
+                            <span>💰 ${rec.price_range}</span>
+                            <span>🍴 ${rec.cuisine}</span>
+                        </div>
+                        <p class="card-description">"${rec.expert_take}"</p>
+                        ${rec.must_try && rec.must_try.length > 0 ? `
+                            <div class="card-details">
+                                <h4>Must Try</h4>
+                                <div class="must-try">
+                                    ${rec.must_try.map(dish => `<span>${dish}</span>`).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                        <div class="card-actions">
+                            <a href="https://maps.google.com/?q=${encodeURIComponent(rec.name + ' ' + location)}" class="btn btn-primary" target="_blank">📍 Directions</a>
+                            <a href="https://www.yelp.com/search?find_desc=${encodeURIComponent(rec.name)}&find_loc=${encodeURIComponent(location)}" class="btn btn-secondary" target="_blank">📖 Yelp</a>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>
