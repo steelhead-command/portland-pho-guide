@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>Portland's Best Pho - AI Curated Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e94560;
+            --secondary: #0f3460;
+            --accent: #f39c12;
+            --dark: #1a1a2e;
+            --light: #eee;
+            --card-bg: #16213e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* Header */
+        .hero {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--secondary) 50%, var(--primary) 100%);
+            padding: 60px 20px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(233,69,96,0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .hero .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .hero .bowl-emoji {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Section Headers */
+        .section-header {
+            padding: 30px 20px 15px;
+            text-align: center;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .section-header p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Restaurant Cards */
+        .cards-container {
+            padding: 0 15px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(233,69,96,0.2);
+        }
+
+        .card-image {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .card-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(transparent, var(--card-bg));
+        }
+
+        .card-rank {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--primary);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            z-index: 2;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent);
+            color: var(--dark);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .card-description {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .card-details {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card-details h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            margin-bottom: 8px;
+        }
+
+        .must-try {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .must-try span {
+            background: var(--primary);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.3));
+        }
+
+        .footer .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .footer p {
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+
+        /* Quick Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .stat {
+            text-align: center;
+            background: rgba(255,255,255,0.05);
+            padding: 15px 10px;
+            border-radius: 15px;
+        }
+
+        .stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .cards-container {
+                max-width: 800px;
+            }
+
+            .card {
+                display: grid;
+                grid-template-columns: 200px 1fr;
+            }
+
+            .card-image {
+                height: 100%;
+                min-height: 250px;
+            }
+
+            .card-image::after {
+                background: linear-gradient(90deg, transparent, var(--card-bg));
+                height: 100%;
+                width: 60%;
+                right: 0;
+                left: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="hero">
+        <div class="hero-content">
+            <span class="bowl-emoji">🍜</span>
+            <h1>Portland's Best Pho</h1>
+            <p class="subtitle">A curated guide for Woodland, WA foodies</p>
+            <span class="badge">🤖 AI-Powered Research by Claude</span>
+        </div>
+    </header>
+
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-value">8</div>
+            <div class="stat-label">Restaurants</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">40+</div>
+            <div class="stat-label">Years History</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">45</div>
+            <div class="stat-label">Min Drive</div>
+        </div>
+    </div>
+
+    <section>
+        <div class="section-header">
+            <h2>🏆 The Legends</h2>
+            <p>Portland institutions serving pho since the '90s</p>
+        </div>
+
+        <div class="cards-container">
+            <!-- Pho Hung -->
+            <article class="card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=600&q=80');">
+                    <span class="card-rank">1</span>
+                    <span class="card-badge">Since 1990</span>
+                </div>
+                <div class="card-content">
+                    <h3>Pho Hung</h3>
+                    <div class="card-meta">
+                        <span>⭐ 4.4</span>
+                        <span>💰 $$</span>
+                        <span>📍 Powell Blvd</span>
+                    </div>
+                    <p class="card-description">"The broth achieves perfect balance of bone-deep richness and clean, aromatic clarity. Closest to Little Saigon quality."</p>
+                    <div class="card-details">
+                        <h4>Must Try</h4>
+                        <div class="must-try">
+                            <span>Super Bowl (6 cuts)</span>
+                            <span>Pho Tai</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <a href="https://maps.google.com/?q=4717+SE+Powell+Blvd+Portland+OR" class="btn btn-primary">📍 Directions</a>
+                        <a href="tel:+15037888286" class="btn btn-secondary">📞 Call</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Pho Oregon -->
+            <article class="card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1555126634-323283e090fa?w=600&q=80');">
+                    <span class="card-rank">2</span>
+                    <span class="card-badge">Gold Standard</span>
+                </div>
+                <div class="card-content">
+                    <h3>Pho Oregon</h3>
+                    <div class="card-meta">
+                        <span>⭐ 4.5</span>
+                        <span>💰 $$</span>
+                        <span>📍 NE 82nd Ave</span>
+                    </div>
+                    <p class="card-description">"Nuanced, understated broth with beautifully tender beef. 22 pho variations. A true Portland institution."</p>
+                    <div class="card-details">
+                        <h4>Must Try</h4>
+                        <div class="must-try">
+                            <span>Pho Dac Biet</span>
+                            <span>Go Large!</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <a href="https://maps.google.com/?q=2518+NE+82nd+Ave+Portland+OR" class="btn btn-primary">📍 Directions</a>
+                        <a href="https://www.yelp.com/biz/pho-oregon-restaurant-portland" class="btn btn-secondary">📖 Yelp</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Tan Tan -->
+            <article class="card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1576577445504-6af96477db52?w=600&q=80');">
+                    <span class="card-rank">3</span>
+                    <span class="card-badge">Beaverton</span>
+                </div>
+                <div class="card-content">
+                    <h3>Tân Tân</h3>
+                    <div class="card-meta">
+                        <span>⭐ 4.3</span>
+                        <span>💰 $$</span>
+                        <span>📍 Beaverton</span>
+                    </div>
+                    <p class="card-description">"Founded by refugees in the '90s. Their pho dac biet is loaded with every cut of beef imaginable."</p>
+                    <div class="card-details">
+                        <h4>Must Try</h4>
+                        <div class="must-try">
+                            <span>Pho Dac Biet</span>
+                            <span>Bun Bo Hue</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <a href="https://maps.google.com/?q=Tan+Tan+Beaverton+OR" class="btn btn-primary">📍 Directions</a>
+                        <a href="https://www.yelp.com/biz/tan-tan-cafe-and-delicatessen-beaverton" class="btn btn-secondary">📖 Yelp</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header">
+            <h2>💎 Hidden Gems</h2>
+            <p>Where the locals go - small batch, big flavor</p>
+        </div>
+
+        <div class="cards-container">
+            <!-- Rose VL -->
+            <article class="card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80');">
+                    <span class="card-rank">4</span>
+                    <span class="card-badge">Cult Favorite</span>
+                </div>
+                <div class="card-content">
+                    <h3>Rose VL / Ha VL</h3>
+                    <div class="card-meta">
+                        <span>⭐ 4.6</span>
+                        <span>💰 $</span>
+                        <span>📍 SE Powell</span>
+                    </div>
+                    <p class="card-description">"James Beard nominated. Only 2-3 rotating dishes daily, made in small batches. Go early - they sell out!"</p>
+                    <div class="card-details">
+                        <h4>Must Try</h4>
+                        <div class="must-try">
+                            <span>Turmeric Noodle Soup</span>
+                            <span>Cao Lầu</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <a href="https://maps.google.com/?q=6424+SE+Powell+Blvd+Portland+OR" class="btn btn-primary">📍 Directions</a>
+                        <a href="https://www.yelp.com/biz/rose-vl-deli-portland-2" class="btn btn-secondary">📖 Yelp</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Thom -->
+            <article class="card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1503764654157-72d979d9af2f?w=600&q=80');">
+                    <span class="card-rank">5</span>
+                    <span class="card-badge">24hr Broth</span>
+                </div>
+                <div class="card-content">
+                    <h3>Thom</h3>
+                    <div class="card-meta">
+                        <span>⭐ 4.4</span>
+                        <span>💰 $$</span>
+                        <span>📍 Concordia</span>
+                    </div>
+                    <p class="card-description">"Third-generation family recipe. 24-hour bone marrow broth - this is the real deal. Also has amazing vegan pho."</p>
+                    <div class="card-details">
+                        <h4>Must Try</h4>
+                        <div class="must-try">
+                            <span>Bone Marrow Pho</span>
+                            <span>18hr Vegan Pho</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <a href="https://maps.google.com/?q=Thom+restaurant+Concordia+Portland+OR" class="btn btn-primary">📍 Directions</a>
+                        <a href="https://www.yelp.com/biz/thom-portland" class="btn btn-secondary">📖 Yelp</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Pho Kim -->
+            <article class="card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1547928576-b822bc410bdf?w=600&q=80');">
+                    <span class="card-rank">6</span>
+                    <span class="card-badge">Best Value</span>
+                </div>
+                <div class="card-content">
+                    <h3>Pho Kim</h3>
+                    <div class="card-meta">
+                        <span>⭐ 4.2</span>
+                        <span>💰 $</span>
+                        <span>📍 East Portland</span>
+                    </div>
+                    <p class="card-description">"Captures the essence of a family kitchen. Spacious, unpretentious, and incredibly cheap. A sleeper hit."</p>
+                    <div class="card-details">
+                        <h4>Must Try</h4>
+                        <div class="must-try">
+                            <span>House Pho</span>
+                            <span>Spring Rolls</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <a href="https://maps.google.com/?q=Pho+Kim+Portland+OR" class="btn btn-primary">📍 Directions</a>
+                        <a href="https://www.yelp.com/search?find_desc=pho+kim&find_loc=Portland%2C+OR" class="btn btn-secondary">📖 Yelp</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header">
+            <h2>✨ Modern Vibes</h2>
+            <p>Date night spots with elevated atmosphere</p>
+        </div>
+
+        <div class="cards-container">
+            <!-- Luc Lac -->
+            <article class="card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80');">
+                    <span class="card-rank">7</span>
+                    <span class="card-badge">Date Night</span>
+                </div>
+                <div class="card-content">
+                    <h3>Luc Lac</h3>
+                    <div class="card-meta">
+                        <span>⭐ 4.3</span>
+                        <span>💰 $$</span>
+                        <span>📍 Downtown</span>
+                    </div>
+                    <p class="card-description">"Grandmother's recipe with five-spice blend. Striking neon ambiance. Try the durian horchata if you're adventurous!"</p>
+                    <div class="card-details">
+                        <h4>Must Try</h4>
+                        <div class="must-try">
+                            <span>Pho Bo</span>
+                            <span>Vermicelli Bowl</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <a href="https://maps.google.com/?q=835+SW+2nd+Ave+Portland+OR" class="btn btn-primary">📍 Directions</a>
+                        <a href="https://www.luclackitchen.com" class="btn btn-secondary">🌐 Website</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Pho Mekha -->
+            <article class="card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&q=80');">
+                    <span class="card-rank">8</span>
+                    <span class="card-badge">Best Condiments</span>
+                </div>
+                <div class="card-content">
+                    <h3>Pho Mekha</h3>
+                    <div class="card-meta">
+                        <span>⭐ 4.3</span>
+                        <span>💰 $$</span>
+                        <span>📍 Roseway</span>
+                    </div>
+                    <p class="card-description">"Best tableside condiment selection in the city - pickled peppers, minced garlic, fresh chili sambals. Order the egg coffee!"</p>
+                    <div class="card-details">
+                        <h4>Must Try</h4>
+                        <div class="must-try">
+                            <span>House Pho</span>
+                            <span>Egg Coffee</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <a href="https://maps.google.com/?q=Pho+Mekha+Portland+OR" class="btn btn-primary">📍 Directions</a>
+                        <a href="https://www.yelp.com/biz/pho-mekha-portland" class="btn btn-secondary">📖 Yelp</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="ai-badge">
+            <span>🤖</span>
+            <span>Generated by Claude AI</span>
+        </div>
+        <p>Research, curation & web design in under 60 seconds</p>
+        <p style="margin-top: 10px; opacity: 0.4;">Made with ❤️ for Dad</p>
+    </footer>
+</body>
+</html>
