@@ -1162,13 +1162,49 @@
             performSearch();
         }
 
+        let animationRunning = false;
+        let apiComplete = false;
+
         async function animateCookingSteps() {
-            for (let i = 0; i < cookingSteps.length; i++) {
-                cookingSteps.forEach(s => s.classList.remove('active'));
-                cookingSteps[i].classList.add('active');
-                if (i > 0) cookingSteps[i-1].classList.add('done');
-                await new Promise(r => setTimeout(r, 800));
+            animationRunning = true;
+            apiComplete = false;
+            let loopCount = 0;
+
+            while (animationRunning && !apiComplete) {
+                for (let i = 0; i < cookingSteps.length; i++) {
+                    if (!animationRunning || apiComplete) break;
+
+                    cookingSteps.forEach(s => s.classList.remove('active'));
+                    cookingSteps[i].classList.add('active');
+                    if (i > 0) cookingSteps[i-1].classList.add('done');
+
+                    // Faster timing on subsequent loops
+                    const delay = loopCount === 0 ? 600 : 400;
+                    await new Promise(r => setTimeout(r, delay));
+                }
+                loopCount++;
+
+                // After first loop, show "still cooking" message
+                if (loopCount === 1 && !apiComplete) {
+                    const lastStep = cookingSteps[cookingSteps.length - 1];
+                    lastStep.querySelector('.text').textContent = 'Still cooking... almost ready!';
+                }
             }
+        }
+
+        function stopAnimation() {
+            animationRunning = false;
+            apiComplete = true;
+            // Mark all as done
+            cookingSteps.forEach(s => {
+                s.classList.remove('active');
+                s.classList.add('done');
+            });
+            // Reset text for next time
+            const texts = ['Searching restaurants...', 'Gathering fresh reviews...', 'Analyzing with AI...', 'Plating recommendations...'];
+            cookingSteps.forEach((step, i) => {
+                step.querySelector('.text').textContent = texts[i];
+            });
         }
 
         // Store search params for use after confirmation
@@ -1219,8 +1255,8 @@
             cookingSteps.forEach(s => s.classList.remove('active', 'done'));
             searchBtn.disabled = true;
 
-            // Start the animation
-            const animationPromise = animateCookingSteps();
+            // Start the animation (runs in background)
+            animateCookingSteps();
 
             try {
                 const response = await fetch(`${API_URL}/search`, {
@@ -1233,14 +1269,13 @@
                     })
                 });
 
-                await animationPromise;
-
                 if (!response.ok) throw new Error('API error');
 
                 const data = await response.json();
 
-                // Small delay before hiding overlay
-                await new Promise(r => setTimeout(r, 500));
+                // Stop animation and hide overlay
+                stopAnimation();
+                await new Promise(r => setTimeout(r, 300));
                 cookingOverlay.classList.remove('active');
 
                 if (data.recommendations && data.recommendations.length > 0) {
@@ -1251,7 +1286,8 @@
 
             } catch (error) {
                 console.error('Search failed:', error);
-                await new Promise(r => setTimeout(r, 500));
+                stopAnimation();
+                await new Promise(r => setTimeout(r, 300));
                 cookingOverlay.classList.remove('active');
                 displayError(location);
             } finally {
